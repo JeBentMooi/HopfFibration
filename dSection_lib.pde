@@ -4,13 +4,17 @@ int dSectionNoPoints = 20;
 
 
 void setupDSection(int dSectionNoPoints, CxComplex z){
-  boundaryPoints = getBoundaryPoints(dSectionNoPoints, z);
+  //boundaryPoints = getBoundaryPoints(dSectionNoPoints, z);
+  //try out grid:
+  CxComplex p = new CxComplex(0,1,0,0);
+  grid = getDSectionGrid(noCol, noRow, p);
+  FlowingGrid = letGridFlow(grid, PI/2);
 }
 
 
 Vector[] getBoundaryPoints(int amount, CxComplex z){ //gives array of points on the boundary circle of the d section, z is one point on fibre in S^3
   CxComplex[]C2_Points = new CxComplex[amount];
-  C2_Points[0] = z;
+  C2_Points[0] = z.normalize();
   for (int i=1; i<amount; i++){
     C2_Points[i]=getNewPoint(C2_Points[i-1], amount);
   }
@@ -22,10 +26,9 @@ Vector[] getBoundaryPoints(int amount, CxComplex z){ //gives array of points on 
 }  
 
 
-void drawBoundary(Vector[] bdryPoints){
+void drawDSectionBoundary(Vector[] bdryPoints){
   SetupDisplaySettingsDSection();
   curveTightness(0.5);
-   
    beginShape();
      for(int i=0; i<bdryPoints.length; i++){
       if(i>0 && distance(bdryPoints[i],bdryPoints[i-1])>500){//distance too big - end shape and start new shape for rest of circle.
@@ -41,8 +44,78 @@ void drawBoundary(Vector[] bdryPoints){
     endShape();
 }
 
+void drawSouthernDSection(){
+  SetupDisplaySettingsDSection();
+  pushMatrix();
+  rotateX(PI/2);
+  rotateZ(PI);
+  rect(0,-200,400,400);
+  popMatrix();
+}
+
 void SetupDisplaySettingsDSection(){
-  strokeWeight(0.05);
-  fill(150,150,250,30);
+  strokeWeight(0.02);
+  fill(150,200,150,130);
   stroke(255);
+}
+
+CxComplex[][] getDSectionGrid(int noColumns, int noRows, CxComplex p){
+  CxComplex[][] grid= new CxComplex[noColumns][noRows];
+  //fill the first & last row of the grid, [0][0]=p and [0][noRows-1]=p_opposite
+  for(int i=0; i<noColumns; i++){
+   grid[i][0] = p.goWithFlow(3*PI*i/(4*noColumns));
+   grid[noColumns-1-i][noRows-1] = p.goWithFlow(PI + 3*PI*i/(4*noColumns));
+  }
+  //fill the middle column for column
+  for(int i = 0; i < noColumns; i++){
+    for(int j = 1; j < noRows-1; j++){
+    CxComplex sub = new CxComplex(subtract(grid[i][noRows-1],grid[i][0]));
+    CxComplex submult = new CxComplex(mult(j/noRows, sub));
+    grid[i][j] = submult;//mult(j/noColumns, sub);
+    }
+  }
+  
+  //print grid
+  for (int i = 0; i< noColumns; i++){
+    for(int j=0; j<noRows; j++){
+        println(i,j,": ", grid[i][j].z_1.real, grid[i][j].z_1.imag, grid[i][j].z_2.real, grid[i][j].z_2.imag);
+    }
+  }
+    
+  
+  
+  return grid; 
+}
+
+CxComplex[][] letGridFlow(CxComplex[][] grid, float t){
+  for(int i = 0; i < grid.length; i++){
+    for(int j = 0; j < grid[0].length; j++){
+    grid[i][j] = grid[i][j].goWithFlow(t);
+    }
+  }
+  return grid;
+}
+
+void displayGrid(CxComplex[][] grid){
+  strokeWeight(0.02);
+  noFill();
+  stroke(255);
+  //make lines connecting each column
+  for(int i = 0; i < grid[0].length; i++){ //go through rows
+    for(int j = 1; j < grid.length; j++){ //go through cols
+     Vector x = new Vector(projectPoint(grid[j-1][i]));
+     Vector y = new Vector(projectPoint(grid[j][i]));
+     line((float)x.x,(float)x.y,(float)x.z,(float)y.x,(float)y.y,(float)y.z);
+    }
+  }
+  //make lines connecting each row
+  for(int i = 0; i < grid.length; i++){ //go through cols
+    for(int j = 1; j < grid[0].length; j++){ //go through rows
+     Vector x = new Vector(projectPoint(grid[i][j-1]));
+     Vector y = new Vector(projectPoint(grid[i][j]));
+     line((float)x.x,(float)x.y,(float)x.z,(float)y.x,(float)y.y,(float)y.z);
+    }
+  }
+  
+
 }

@@ -6,6 +6,8 @@ import org.qscript.events.*;
 import org.qscript.eventsonfire.*;
 import org.qscript.operator.*;
 
+
+
 //______________________________________________________________________________________________________________________________________________________________________________________________
 //______________________________________________________________________________________________________________________________________________________________________________________________
 
@@ -30,6 +32,12 @@ import org.qscript.operator.*;
   
   //SETUP DISC LIKE D SECTION
   Vector[]boundaryPoints;
+  
+  //SETUP FLOWING GRIDS
+  int noCol = 6;
+  int noRow = 6;
+  CxComplex[][] grid = new CxComplex[noCol][noRow];
+  CxComplex[][] FlowingGrid = new CxComplex[noCol][noRow];
 
 void setup() {
   size(800, 800, P3D);
@@ -39,9 +47,8 @@ void setup() {
   //SETUP DISC LIKE D SECTION
   CxComplex N = new CxComplex(1,0,0,0); //north pole projection
   //south pole is seperate function!
-  CxComplex P = new CxComplex(0,cos(5),0,sin(5)); //various points on sphere
-  CxComplex Q = new CxComplex(cos(5),0,0,sin(5)); //various points on sphere
-  setupDSection(100,Q);
+  CxComplex P = new CxComplex(4,20,0,1); //random point on sphere - gets normalized in setup
+  setupDSection(100,P);
 }
 
 
@@ -80,7 +87,11 @@ void draw(){
   nameAxes(300);
   
   //DRAW D SECTION
-  drawBoundary(boundaryPoints);
+  //drawSouthernDSection(); //Point S
+  //drawDSectionBoundary(boundaryPoints); //all other Points
+  displayGrid(grid);
+  displayGrid(FlowingGrid);
+  
   
   //DRAW FibreS
   fillArray();

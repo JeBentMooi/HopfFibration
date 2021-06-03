@@ -1,7 +1,7 @@
 //____________________________________________SETUP COORDINATE SYSTEM FUNCTIONS__________________________________________________________________________________________________________________________________________________
 
 void centerCoordinatesystem(){
-  translate(width/2-50, height/2+50, 0);
+  translate(width/2-50, height/2+50, -100);
   scale(50);
   rotateX(3*PI/8);
   rotateZ(PI/8);
