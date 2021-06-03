@@ -21,21 +21,8 @@ class CxComplex { //Complex x Complex -> 4D!
    }
  
  //FUNCTIONS
+ double x_1(){
+ return this.z_1.real;
+ }
  
-   //double real_1(CxComplex Z){
-   //return Z.z_1.real;
-   //}
-   
-   //double real_2(CxComplex Z){
-   //return Z.z_2.real;
-   //}
-   
-   //double imag_1(CxComplex Z){
-   //return Z.z_1.imag;
-   //}
-   
-   //double imag_2(CxComplex Z){
-   //return Z.z_2.imag;
-   //}
-
 }
