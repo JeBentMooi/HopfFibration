@@ -2,11 +2,14 @@
 
 int dSectionNoPoints = 20;
 
+void setupDSectionBoundary(int dSectionNoPoints, CxComplex z){
+  z = z.normalize();
+  boundaryPoints = getBoundaryPoints(dSectionNoPoints, z);
+}
 
-void setupDSection(int dSectionNoPoints, CxComplex z){
-  //boundaryPoints = getBoundaryPoints(dSectionNoPoints, z);
-  //try out grid:
-  CxComplex p = new CxComplex(0,1,0,0);
+void setupDSectionGrid(int noCol, int noRow, CxComplex z){
+  z = z.normalize();
+  CxComplex p = new CxComplex(z);
   grid = getDSectionGrid(noCol, noRow, p);
   FlowingGrid = letGridFlow(grid, PI/2);
 }
@@ -44,7 +47,7 @@ void drawDSectionBoundary(Vector[] bdryPoints){
     endShape();
 }
 
-void drawSouthernDSection(){
+void drawSouthernDSectionBoundary(){
   SetupDisplaySettingsDSection();
   pushMatrix();
   rotateX(PI/2);
@@ -68,22 +71,13 @@ CxComplex[][] getDSectionGrid(int noColumns, int noRows, CxComplex p){
   }
   //fill the middle column for column
   for(int i = 0; i < noColumns; i++){
-    for(int j = 1; j < noRows-1; j++){
-    CxComplex sub = new CxComplex(subtract(grid[i][noRows-1],grid[i][0]));
-    CxComplex submult = new CxComplex(mult(j/noRows, sub));
-    grid[i][j] = submult;//mult(j/noColumns, sub);
+    for(double j = 1; j < noRows-1; j++){
+      double rows = noRows;
+      double multi = j/rows;
+      CxComplex diff = new CxComplex(subtract(grid[i][noRows-1],grid[i][0]));
+      grid[i][(int)j] = add(grid[i][0],mult(multi, diff));
     }
   }
-  
-  //print grid
-  for (int i = 0; i< noColumns; i++){
-    for(int j=0; j<noRows; j++){
-        println(i,j,": ", grid[i][j].z_1.real, grid[i][j].z_1.imag, grid[i][j].z_2.real, grid[i][j].z_2.imag);
-    }
-  }
-    
-  
-  
   return grid; 
 }
 
@@ -108,6 +102,21 @@ void displayGrid(CxComplex[][] grid){
      line((float)x.x,(float)x.y,(float)x.z,(float)y.x,(float)y.y,(float)y.z);
     }
   }
+  //draw rest of boundary ---------------------------------------------------------------DOES NOT WORK YET!!!------------------------------------------------------------------------
+  beginShape(); //"right" side of circle
+  stroke(0,200,0);
+  CxComplex startHere = grid[0][grid[0].length-1].goWithFlow(-PI/(4*grid[0].length));
+  for(int i=0; i<grid[0].length+1; i++){
+    vertex((float)projectPoint(startHere.goWithFlow(i*PI/(4*grid[0].length))).x, (float)projectPoint(startHere.goWithFlow(PI/(i*4*grid[0].length))).y, (float)projectPoint(startHere.goWithFlow(i*PI/(4*grid[0].length))).z);
+  }
+  endShape();
+  beginShape(); //"left" side of circle
+  startHere = grid[0][grid[0].length-1].goWithFlow(PI);
+  for(int i=0; i<grid[0].length; i++){
+   vertex((float)projectPoint(startHere.goWithFlow(i*PI/(4*grid[0].length))).x, (float)projectPoint(startHere.goWithFlow(PI/(i*4*grid[0].length))).y, (float)projectPoint(startHere.goWithFlow(i*PI/(4*grid[0].length))).z);
+  }
+  endShape();
+  stroke(255);
   //make lines connecting each row
   for(int i = 0; i < grid.length; i++){ //go through cols
     for(int j = 1; j < grid[0].length; j++){ //go through rows
@@ -116,6 +125,4 @@ void displayGrid(CxComplex[][] grid){
      line((float)x.x,(float)x.y,(float)x.z,(float)y.x,(float)y.y,(float)y.z);
     }
   }
-  
-
 }

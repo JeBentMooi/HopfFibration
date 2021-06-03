@@ -48,7 +48,7 @@ void setup() {
   CxComplex N = new CxComplex(1,0,0,0); //north pole projection
   //south pole is seperate function!
   CxComplex P = new CxComplex(4,20,0,1); //random point on sphere - gets normalized in setup
-  setupDSection(100,P);
+  setupDSectionGrid(noCol,noRow,P);
 }
 
 

@@ -60,7 +60,20 @@ class CxComplex { //Complex x Complex -> 4D!
  CxComplex mult(double scalar, CxComplex z){
    Complex a = z.z_1;
    Complex b = z.z_2;
-   //a = new Complex(a.real*scalar, a.imag*scalar);
-   //b = new Complex(b.real*scalar, b.imag*scalar);
+   a = new Complex(a.real*scalar, a.imag*scalar);
+   b = new Complex(b.real*scalar, b.imag*scalar);
  return new CxComplex(a,b);
  }
+ 
+ CxComplex add(CxComplex x, CxComplex y){
+   Complex a = x.z_1;
+   Complex b = x.z_2;
+   Complex c = y.z_1;
+   Complex d = y.z_2;
+   
+   a = a.add(c);
+   b = b.add(d);
+   return new CxComplex(a,b);
+ }
+ 
+ 
