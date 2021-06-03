@@ -90,7 +90,7 @@ void draw(){
   //drawSouthernDSection(); //Point S
   //drawDSectionBoundary(boundaryPoints); //all other Points
   displayGrid(grid);
-  displayGrid(FlowingGrid);
+  //displayGrid(FlowingGrid);
   
   
   //DRAW FibreS

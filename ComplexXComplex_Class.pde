@@ -5,6 +5,12 @@ class CxComplex { //Complex x Complex -> 4D!
  
  //CONSTRUCTOR
  
+   CxComplex(){
+   this.z_1 = new Complex();
+   this.z_1 = new Complex();
+   }
+   
+   
    CxComplex(CxComplex z){
      this.z_1 = z.z_1;
      this.z_2 = z.z_2;
