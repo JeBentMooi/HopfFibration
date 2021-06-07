@@ -1,4 +1,4 @@
-//-------get random disc-like d section----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//-------get any disc-like d section----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 int dSectionNoPoints = 20;
 
@@ -14,10 +14,48 @@ void setupDSectionGrid(int noCol, int noRow, CxComplex z){
       grid[i][j]=new CxComplex();
     }
   }
-  
   CxComplex p = new CxComplex(z);
   grid = getDSectionGrid(noCol, noRow, p);
-  FlowingGrid = letGridFlow(grid, PI/2);
+  FlowingGrid = letGridFlow(grid, PI);
+}
+
+
+
+Tube[][] setupTubes(CxComplex[][] grid, float t){// t is the time that it will flow in the Hopf flow
+  float radius = 0.02; //radius of cross section
+  float noCoord = 10; //noCoord is how many coordinates will be passed into the curve
+  //------------------------
+  //get an array of tubes out of that array of points from that grid
+  Tube[][] tubeGrid =new Tube[grid.length][grid[0].length];
+  for(int i=0; i<grid.length; i++){//go through cols
+    for(int j=0; j<grid[0].length; j++){//go through rows
+      PVector[] v = new PVector[(int)noCoord]; //array for points of the path for this point
+      for(int k=0; k<noCoord; k++){ //fill up coordinate arrays
+      v[k] = new PVector((float)goWithFlowAndProject(grid[i][j], k*t/noCoord).x, (float)goWithFlowAndProject(grid[i][j],k*t/noCoord).y, (float)goWithFlowAndProject(grid[i][j],k*t/noCoord).z);
+      //println("TESTTHINGY", k*t/noCoord);
+      //println(i,j,grid[i][j].z_1.real,grid[i][j].z_1.imag, grid[i][j].z_2.real,grid[i][j].z_2.imag);
+      //println("x Coordinates", i, j, goWithFlowAndProject(grid[i][j], k*t/noCoord).x, " .. and float converted", (float)goWithFlowAndProject(grid[i][j], k*t/noCoord).x);
+      //println("y Coordinates", i, j, goWithFlowAndProject(grid[i][j], k*t/noCoord).y, " .. and float converted", (float)goWithFlowAndProject(grid[i][j], k*t/noCoord).y);
+      //println("z Coordinates", i, j, goWithFlowAndProject(grid[i][j], k*t/noCoord).z, " .. and float converted", (float)goWithFlowAndProject(grid[i][j], k*t/noCoord).z);
+      
+      }
+      BSpline3D path = new BSpline3D(v,10); //create path for these coordinates
+      Oval oval = new Oval(radius,(int)noCoord); //create cross section
+      Tube tube = new Tube(path,oval); //create tube
+      tubeGrid[i][j] = tube; //fill tube array
+    }
+  }
+  return tubeGrid;
+}
+
+void drawTubes(Tube[][] tubes){
+  for(int i=0; i<tubes.length; i++){//go through cols
+    for(int j=0; j<tubes[0].length; j++){//go through rows
+      tubes[i][j].drawMode(S3D.SOLID);
+      tubes[i][j].fill(color(150,150,255));
+      tubes[i][j].draw(getGraphics());
+    }
+  }
 }
 
 
@@ -75,7 +113,6 @@ CxComplex[][] getDSectionGrid(int noColumns, int noRows, CxComplex p){
    grid[i][0] = p.goWithFlow(3*PI*i/(4*noColumns));
    grid[noColumns-1-i][noRows-1] = p.goWithFlow(PI + 3*PI*i/(4*noColumns));
   }
-  
   //fill the first & last column of the grid
   CxComplex startHereFirst = grid[0][0].goWithFlow(7*PI/4); //start at p_tilde
   CxComplex startHereLast = grid[0][0].goWithFlow(3*PI/4); //start at p_opposite
@@ -83,7 +120,6 @@ CxComplex[][] getDSectionGrid(int noColumns, int noRows, CxComplex p){
    grid[0][noRows-1-i] = startHereFirst.goWithFlow(i*PI/(4*noRows)); //first col
    grid[noRows-1][i]= startHereLast.goWithFlow(i*PI/(4*noRows)); //last col
   }
-  
   //fill the middle column for column
   for(int i = 1; i < noColumns-1; i++){ //go through cols
     for(double j = 1; j < noRows-1; j++){ //go through rows
@@ -93,13 +129,12 @@ CxComplex[][] getDSectionGrid(int noColumns, int noRows, CxComplex p){
       grid[i][(int)j] = add(grid[i][0],mult(multi, diff));
     }
   }
-  
   //print grid
-  for (int i = 0; i< noColumns; i++){
-    for(int j=0; j<noRows; j++){
-        println(i,j,": ", grid[i][j].z_1.real, grid[i][j].z_1.imag, grid[i][j].z_2.real, grid[i][j].z_2.imag);
-    }
-  }
+  //for (int i = 0; i< noColumns; i++){
+  //  for(int j=0; j<noRows; j++){
+  //      println(i,j,": ", grid[i][j].z_1.real, grid[i][j].z_1.imag, grid[i][j].z_2.real, grid[i][j].z_2.imag);
+  //   }
+  //}
   return grid; 
 }
 
@@ -116,6 +151,29 @@ void displayGrid(CxComplex[][] grid){
   strokeWeight(0.02);
   noFill();
   stroke(255);
+  //make lines connecting each column
+  for(int i = 0; i < grid[0].length; i++){ //go through rows
+    for(int j = 1; j < grid.length; j++){ //go through cols
+     Vector x = new Vector(projectPoint(grid[j-1][i]));
+     Vector y = new Vector(projectPoint(grid[j][i]));
+     line((float)x.x,(float)x.y,(float)x.z,(float)y.x,(float)y.y,(float)y.z);
+    }
+  }
+  
+  //make lines connecting each row
+  for(int i = 0; i < grid.length; i++){ //go through cols
+    for(int j = 1; j < grid[0].length; j++){ //go through rows
+     Vector x = new Vector(projectPoint(grid[i][j-1]));
+     Vector y = new Vector(projectPoint(grid[i][j]));
+     line((float)x.x,(float)x.y,(float)x.z,(float)y.x,(float)y.y,(float)y.z);
+    }
+  }
+}
+
+void displayGrid(CxComplex[][] grid, int r, int g, int b){
+  strokeWeight(0.02);
+  noFill();
+  stroke(r, g, b);
   //make lines connecting each column
   for(int i = 0; i < grid[0].length; i++){ //go through rows
     for(int j = 1; j < grid.length; j++){ //go through cols

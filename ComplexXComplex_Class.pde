@@ -50,9 +50,9 @@ class CxComplex { //Complex x Complex -> 4D!
  }
  
  CxComplex goWithFlow(float t){ //goes with the Hopf flow, baby
-   Complex z_1 = this.z_1.mult(Complex.exp(i.mult(t)));
-   Complex z_2 = this.z_2.mult(Complex.exp(i.mult(t)));
-   return new CxComplex(z_1,z_2);
+   Complex new_z_1 = this.z_1.mult(Complex.exp(i.mult(t)));
+   Complex new_z_2 = this.z_2.mult(Complex.exp(i.mult(t)));
+   return new CxComplex(new_z_1,new_z_2);
  }
 }
 // -----------------------------------------------
@@ -81,5 +81,6 @@ class CxComplex { //Complex x Complex -> 4D!
    b = b.add(d);
    return new CxComplex(a,b);
  }
+
  
  

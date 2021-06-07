@@ -1,3 +1,11 @@
+//library for extrusions: Shapes 3D
+import shapes3d.*;
+import shapes3d.contour.*;
+import shapes3d.org.apache.commons.math.*;
+import shapes3d.org.apache.commons.math.geometry.*;
+import shapes3d.path.*;
+import shapes3d.utils.*;
+
 //library for complex numbers: QScript
 import org.qscript.*;
 import org.qscript.editor.*;
@@ -15,13 +23,13 @@ import org.qscript.operator.*;
  
   //SETUP ARRAY OF CIRCLE POINTS
   int noPoints = 150; //how many points will be used to draw 1 circle; must be >=3
-  int noCircles = 30; //how many circles do you want to plot?
+  int noCircles = 30; //how many circles do you want to plot? - can be changed with scrollbar
   Vector[][]circlePoints;
-  Complex[] startingPoints;
+  Complex[]startingPoints;
   
   //SETUP SCROLLBARS
   HScrollbar s_VaryPhi, s_VaryTheta, s_VaryTheta2, s_Spiral;
-  HScrollbar s_noCircles;
+  HScrollbar s_Flow, s_noCircles;
   boolean VaryThetaMode = true;
   boolean VaryPhiMode = false;
   boolean SpiralMode = false;
@@ -38,6 +46,7 @@ import org.qscript.operator.*;
   int noRow = 6;
   CxComplex[][] grid = new CxComplex[noCol][noRow];
   CxComplex[][] FlowingGrid = new CxComplex[noCol][noRow];
+  Tube[][] tubes;
 
 void setup() {
   size(800, 800, P3D);
@@ -46,9 +55,10 @@ void setup() {
   
   //SETUP DISC LIKE D SECTION
   CxComplex N = new CxComplex(1,0,0,0); //north pole projection
+  //CxComplex S = new CxComplex(0,0,1,0); //south pole
   //south pole is seperate function!
-  CxComplex P = new CxComplex(4,20,0,1); //random point on sphere - gets normalized in setup
-  setupDSectionGrid(noCol,noRow,P);
+  //CxComplex P = new CxComplex(4,200,0,123); //random point on sphere - gets normalized in setup
+  setupDSectionGrid(noCol,noRow,N);
 }
 
 
@@ -90,9 +100,13 @@ void draw(){
   //drawSouthernDSection(); //Point S
   //drawDSectionBoundary(boundaryPoints); //all other Points
   displayGrid(grid);
-  //displayGrid(FlowingGrid);
+  displayGrid(FlowingGrid, 255,0,0);
   
-  
+  //DRAW TUBES
+  //SETUP EXTRUSIONS
+  tubes = setupTubes(grid, scrollbarValue(s_Flow,2*PI));
+  drawTubes(tubes);
+ 
   //DRAW FibreS
   fillArray();
   drawColCircle(); //draw fibres
@@ -106,7 +120,7 @@ void draw(){
   rotateSphere(rot);
   drawAxes(80,3);
   drawSphere();
-  drawPointsOnSphere(startingPoints);
+  //drawPointsOnSphere(startingPoints);
   
   //DRAW SLIDERS
   camera(); //back to normal camera settings for second overlay
