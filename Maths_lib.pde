@@ -1,7 +1,6 @@
 //___________________________________MATHEMATICAL ALGORITHM FUNCTIONS_______________________________________________________________________________________________________________________________________
 
 void fillArray(){ //gives #noPoints points on the circle in R3, (evenly spaced on the circle in C2)
-  //CxComplex p_i = new CxComplex(findFibrePoint(complex)); //create copy of p to change throughout the loop
   CxComplex[] PointsInC2 = new CxComplex[noCircles]; //array of points in C2
   for(int i=0; i<noCircles; i++){
     PointsInC2[i] = findFibrePoint(startingPoints[i]); //fill that array up:
@@ -54,7 +53,7 @@ Vector goWithFlowAndProject(CxComplex p, float t){
   Complex z_2_second = p.z_2.mult(Complex.exp(i.mult(t)));
   CxComplex p_2 = new CxComplex(z_1_second, z_2_second);
   Vector v = projectPoint(p_2);
-  println(v.x, v.y, v.z);
+  //println(v.x, v.y, v.z);
   return v;
 }
 

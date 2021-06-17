@@ -54,6 +54,16 @@ class CxComplex { //Complex x Complex -> 4D!
    Complex new_z_2 = this.z_2.mult(Complex.exp(i.mult(t)));
    return new CxComplex(new_z_1,new_z_2);
  }
+ 
+  CxComplex normalize2ndCoordinate(){
+    float len = sqrt(pow((float)this.x_1(),2)+pow((float)this.y_1(),2)+pow((float)this.x_2(),2)+pow((float)this.y_2(),2)); //length of vector
+    float x_1 = (float)this.x_1();
+    float y_1 = (float)this.y_1();
+    float x_2 = 1-len;
+    float y_2= (float)this.y_2();
+    return new CxComplex(x_1,y_1,x_2,y_2);
+  }
+  
 }
 // -----------------------------------------------
 

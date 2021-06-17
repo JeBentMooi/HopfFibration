@@ -9,21 +9,15 @@ void setupDSectionBoundary(int dSectionNoPoints, CxComplex z){
 
 void setupDSectionGrid(int noCol, int noRow, CxComplex z){
   z = z.normalize();
-  for(int i =0; i<grid.length; i++){
-    for(int j =0; j<grid[0].length; j++){
-      grid[i][j]=new CxComplex();
-    }
-  }
   CxComplex p = new CxComplex(z);
   grid = getDSectionGrid(noCol, noRow, p);
-  FlowingGrid = letGridFlow(grid, PI);
 }
 
 
 
 Tube[][] setupTubes(CxComplex[][] grid, float t){// t is the time that it will flow in the Hopf flow
   float radius = 0.02; //radius of cross section
-  float noCoord = 10; //noCoord is how many coordinates will be passed into the curve
+  float noCoord = 40; //noCoord is how many coordinates will be passed into the curve
   //------------------------
   //get an array of tubes out of that array of points from that grid
   Tube[][] tubeGrid =new Tube[grid.length][grid[0].length];
@@ -39,7 +33,7 @@ Tube[][] setupTubes(CxComplex[][] grid, float t){// t is the time that it will f
       //println("z Coordinates", i, j, goWithFlowAndProject(grid[i][j], k*t/noCoord).z, " .. and float converted", (float)goWithFlowAndProject(grid[i][j], k*t/noCoord).z);
       
       }
-      BSpline3D path = new BSpline3D(v,10); //create path for these coordinates
+      BSpline3D path = new BSpline3D(v,20); //create path for these coordinates
       Oval oval = new Oval(radius,(int)noCoord); //create cross section
       Tube tube = new Tube(path,oval); //create tube
       tubeGrid[i][j] = tube; //fill tube array
@@ -126,7 +120,9 @@ CxComplex[][] getDSectionGrid(int noColumns, int noRows, CxComplex p){
       double rows = noRows;
       double multi = j/rows;
       CxComplex diff = new CxComplex(subtract(grid[i][noRows-1],grid[i][0]));
-      grid[i][(int)j] = add(grid[i][0],mult(multi, diff));
+      diff = add(grid[i][0],mult(multi, diff));
+      grid[i][(int)j] = diff.normalize2ndCoordinate();
+      println("Diff values:", i, j, "  ", diff.z_1.real, diff.z_1.imag, diff.z_2.real, diff.z_2.imag);
     }
   }
   //print grid
@@ -139,12 +135,13 @@ CxComplex[][] getDSectionGrid(int noColumns, int noRows, CxComplex p){
 }
 
 CxComplex[][] letGridFlow(CxComplex[][] grid, float t){
+  CxComplex[][] newGrid = new CxComplex[grid.length][grid[0].length];
   for(int i = 0; i < grid.length; i++){
     for(int j = 0; j < grid[0].length; j++){
-    grid[i][j] = grid[i][j].goWithFlow(t);
+    newGrid[i][j] = grid[i][j].goWithFlow(t);
     }
   }
-  return grid;
+  return newGrid;
 }
 
 void displayGrid(CxComplex[][] grid){

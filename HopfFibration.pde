@@ -42,8 +42,8 @@ import org.qscript.operator.*;
   Vector[]boundaryPoints;
   
   //SETUP FLOWING GRIDS
-  int noCol = 6;
-  int noRow = 6;
+  int noCol = 3;
+  int noRow = 3;
   CxComplex[][] grid = new CxComplex[noCol][noRow];
   CxComplex[][] FlowingGrid = new CxComplex[noCol][noRow];
   Tube[][] tubes;
@@ -59,6 +59,7 @@ void setup() {
   //south pole is seperate function!
   //CxComplex P = new CxComplex(4,200,0,123); //random point on sphere - gets normalized in setup
   setupDSectionGrid(noCol,noRow,N);
+  setupDSectionBoundary(20, N);
 }
 
 
@@ -100,14 +101,14 @@ void draw(){
   //drawSouthernDSection(); //Point S
   //drawDSectionBoundary(boundaryPoints); //all other Points
   displayGrid(grid);
-  displayGrid(FlowingGrid, 255,0,0);
+  FlowingGrid = letGridFlow(grid, scrollbarValue(s_Flow,2.5*PI));
+  displayGrid(FlowingGrid,200,0,200);
   
-  //DRAW TUBES
-  //SETUP EXTRUSIONS
-  tubes = setupTubes(grid, scrollbarValue(s_Flow,2*PI));
+  //TUBES
+  tubes = setupTubes(grid, scrollbarValue(s_Flow,2.5*PI));
   drawTubes(tubes);
  
-  //DRAW FibreS
+  //DRAW Fibres
   fillArray();
   drawColCircle(); //draw fibres
   
@@ -120,7 +121,7 @@ void draw(){
   rotateSphere(rot);
   drawAxes(80,3);
   drawSphere();
-  //drawPointsOnSphere(startingPoints);
+  drawPointsOnSphere(startingPoints);
   
   //DRAW SLIDERS
   camera(); //back to normal camera settings for second overlay

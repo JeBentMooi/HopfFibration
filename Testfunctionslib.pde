@@ -39,6 +39,6 @@ Complex getPointInDSection(){
   Complex a = new Complex(0.09507359811416827, 0.13630633796277544);
   Complex b = new Complex(0.05677098317229444, 0.08496381245272511);
   a = a.div(b);
-  println(a.real, a.imag);
+  //println(a.real, a.imag);
   return a;
 }
