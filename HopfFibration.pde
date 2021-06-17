@@ -42,11 +42,11 @@ import org.qscript.operator.*;
   Vector[]boundaryPoints;
   
   //SETUP FLOWING GRIDS
-  int noCol = 3;
-  int noRow = 3;
+  int noCol = 15;
+  int noRow = 15;
   CxComplex[][] grid = new CxComplex[noCol][noRow];
   CxComplex[][] FlowingGrid = new CxComplex[noCol][noRow];
-  Tube[][] tubes;
+  PVector[][] tubes;
 
 void setup() {
   size(800, 800, P3D);
@@ -56,10 +56,13 @@ void setup() {
   //SETUP DISC LIKE D SECTION
   CxComplex N = new CxComplex(1,0,0,0); //north pole projection
   //CxComplex S = new CxComplex(0,0,1,0); //south pole
-  //south pole is seperate function!
   //CxComplex P = new CxComplex(4,200,0,123); //random point on sphere - gets normalized in setup
   setupDSectionGrid(noCol,noRow,N);
   setupDSectionBoundary(20, N);
+  
+  //SETUP TUBES
+  //tubes = setupTubes(grid, 2*PI, 40);
+  
 }
 
 
@@ -105,8 +108,7 @@ void draw(){
   displayGrid(FlowingGrid,200,0,200);
   
   //TUBES
-  tubes = setupTubes(grid, scrollbarValue(s_Flow,2.5*PI));
-  drawTubes(tubes);
+  //drawTube(tubes, scrollbarValue(s_Flow, 35)+5);
  
   //DRAW Fibres
   fillArray();

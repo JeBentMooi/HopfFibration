@@ -15,34 +15,51 @@ void setupDSectionGrid(int noCol, int noRow, CxComplex z){
 
 
 
-Tube[][] setupTubes(CxComplex[][] grid, float t){// t is the time that it will flow in the Hopf flow
-  float radius = 0.02; //radius of cross section
-  float noCoord = 40; //noCoord is how many coordinates will be passed into the curve
+PVector[][] setupTubes(CxComplex[][] grid, float t){// t is the time that it will flow in the Hopf flow
+  int noTotalCoord = 50; //noCoord is how many coordinates will be passed into the curve
   //------------------------
-  //get an array of tubes out of that array of points from that grid
-  Tube[][] tubeGrid =new Tube[grid.length][grid[0].length];
-  for(int i=0; i<grid.length; i++){//go through cols
-    for(int j=0; j<grid[0].length; j++){//go through rows
-      PVector[] v = new PVector[(int)noCoord]; //array for points of the path for this point
-      for(int k=0; k<noCoord; k++){ //fill up coordinate arrays
-      v[k] = new PVector((float)goWithFlowAndProject(grid[i][j], k*t/noCoord).x, (float)goWithFlowAndProject(grid[i][j],k*t/noCoord).y, (float)goWithFlowAndProject(grid[i][j],k*t/noCoord).z);
-      //println("TESTTHINGY", k*t/noCoord);
-      //println(i,j,grid[i][j].z_1.real,grid[i][j].z_1.imag, grid[i][j].z_2.real,grid[i][j].z_2.imag);
-      //println("x Coordinates", i, j, goWithFlowAndProject(grid[i][j], k*t/noCoord).x, " .. and float converted", (float)goWithFlowAndProject(grid[i][j], k*t/noCoord).x);
-      //println("y Coordinates", i, j, goWithFlowAndProject(grid[i][j], k*t/noCoord).y, " .. and float converted", (float)goWithFlowAndProject(grid[i][j], k*t/noCoord).y);
-      //println("z Coordinates", i, j, goWithFlowAndProject(grid[i][j], k*t/noCoord).z, " .. and float converted", (float)goWithFlowAndProject(grid[i][j], k*t/noCoord).z);
-      
+  //get an array of vectors out of that array of points from that grid
+  PVector[][] tubeVectors =new PVector[grid.length * grid[0].length][noTotalCoord];
+  for(int i=0; i<grid.length; i++){//go through cols of grid
+    for(int j=0; j<grid[0].length; j++){//go through rows of grid
+      for(int k=0; k<noTotalCoord; k++){ //go through coordinates
+      tubeVectors[i*grid[0].length +j][k] = new PVector((float)goWithFlowAndProject(grid[i][j], k*t/noTotalCoord).x, (float)goWithFlowAndProject(grid[i][j],k*t/noTotalCoord).y, (float)goWithFlowAndProject(grid[i][j],k*t/noTotalCoord).z);
       }
-      BSpline3D path = new BSpline3D(v,20); //create path for these coordinates
-      Oval oval = new Oval(radius,(int)noCoord); //create cross section
-      Tube tube = new Tube(path,oval); //create tube
-      tubeGrid[i][j] = tube; //fill tube array
     }
   }
-  return tubeGrid;
+  return tubeVectors;
 }
 
-void drawTubes(Tube[][] tubes){
+PVector[][] setupTubes(CxComplex[][] grid, float t, int noTotalCoord){// t is the time that it will flow in the Hopf flow
+  //get an array of vectors out of that array of points from that grid
+  PVector[][] tubeVectors =new PVector[grid.length * grid[0].length][noTotalCoord];
+  for(int i=0; i<grid.length; i++){//go through cols of grid
+    for(int j=0; j<grid[0].length; j++){//go through rows of grid
+      for(int k=0; k<noTotalCoord; k++){ //go through coordinates
+      tubeVectors[i*grid[0].length +j][k] = new PVector((float)goWithFlowAndProject(grid[i][j], k*t/noTotalCoord).x, (float)goWithFlowAndProject(grid[i][j],k*t/noTotalCoord).y, (float)goWithFlowAndProject(grid[i][j],k*t/noTotalCoord).z);
+      }
+    }
+  }
+  return tubeVectors;
+}
+
+void drawTube(PVector[][]tubeCoord, float NumCoord){ //NumCoord tells us how many coordinates we should draw from the ones we got
+  float radius = 0.02; //radius of cross section
+  for (int j=0; j<tubeCoord.length; j++){
+    PVector[] coordinates = new PVector[(int)NumCoord];
+    for(int i=0; i<(int)NumCoord; i++){
+      coordinates[i]=tubeCoord[j][i];
+    }
+    BSpline3D path = new BSpline3D(coordinates,20); //create path for these coordinates
+    Oval oval = new Oval(radius, 10); //create cross section
+    Tube tube = new Tube(path,oval); //create tube
+     tube.drawMode(S3D.SOLID);
+     tube.fill(color(150,150,255));
+     tube.draw(getGraphics());
+  }
+}
+
+void drawTubes(Tube[][] tubes, int NumCoord){
   for(int i=0; i<tubes.length; i++){//go through cols
     for(int j=0; j<tubes[0].length; j++){//go through rows
       tubes[i][j].drawMode(S3D.SOLID);
