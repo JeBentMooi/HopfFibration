@@ -8,11 +8,9 @@ void setupDSectionBoundary(int dSectionNoPoints, CxComplex z){
 }
 
 void setupDSectionGrid(int noCol, int noRow, CxComplex z){
-  z = z.normalize();
-  CxComplex p = new CxComplex(z);
+  CxComplex p = new CxComplex(z.normalize());
   grid = getDSectionGrid(noCol, noRow, p);
 }
-
 
 
 PVector[][] setupTubes(CxComplex[][] grid, float t){// t is the time that it will flow in the Hopf flow
@@ -139,7 +137,7 @@ CxComplex[][] getDSectionGrid(int noColumns, int noRows, CxComplex p){
       CxComplex diff = new CxComplex(subtract(grid[i][noRows-1],grid[i][0]));
       diff = add(grid[i][0],mult(multi, diff));
       grid[i][(int)j] = diff.normalize2ndCoordinate();
-      println("Diff values:", i, j, "  ", diff.z_1.real, diff.z_1.imag, diff.z_2.real, diff.z_2.imag);
+      //println("Diff values:", i, j, "  ", diff.z_1.real, diff.z_1.imag, diff.z_2.real, diff.z_2.imag);
     }
   }
   //print grid
@@ -150,6 +148,23 @@ CxComplex[][] getDSectionGrid(int noColumns, int noRows, CxComplex p){
   //}
   return grid; 
 }
+
+CxComplex[][] getDSectionGridCircular(float varyR, float varyTheta){
+  CxComplex[][]circularGrid = new CxComplex[(int)varyR][(int)varyTheta];
+  for(int i=0; i<varyR; i++){
+    for(int j=0; j<varyTheta; j++){
+      Complex Im = new Complex(0,1); //i
+      Complex r = new Complex(i/varyR-1);
+      Complex Theta = new Complex(j*2*PI/varyTheta-1);
+      Complex c_2 = new Complex(Complex.sqrt(Complex.sub(1,Complex.pow(r,2))));
+      Complex c_1 = new Complex(r.mult(Complex.exp(Im.mult(Theta))));
+      println(i, j, "c_1", c_1.real, c_1.imag, "c_2", c_2.real, c_2.imag);
+      circularGrid[i][j] = new CxComplex(c_1, c_2);
+    }
+  }
+  return circularGrid;
+}
+
 
 CxComplex[][] letGridFlow(CxComplex[][] grid, float t){
   CxComplex[][] newGrid = new CxComplex[grid.length][grid[0].length];
@@ -173,13 +188,41 @@ void displayGrid(CxComplex[][] grid){
      line((float)x.x,(float)x.y,(float)x.z,(float)y.x,(float)y.y,(float)y.z);
     }
   }
-  
   //make lines connecting each row
   for(int i = 0; i < grid.length; i++){ //go through cols
     for(int j = 1; j < grid[0].length; j++){ //go through rows
      Vector x = new Vector(projectPoint(grid[i][j-1]));
      Vector y = new Vector(projectPoint(grid[i][j]));
      line((float)x.x,(float)x.y,(float)x.z,(float)y.x,(float)y.y,(float)y.z);
+    }
+  }
+}
+
+void displayGrid(CxComplex[][] grid, boolean circular){
+  strokeWeight(0.02);
+  noFill();
+  stroke(255);
+  //make lines connecting each column
+  for(int i = 0; i < grid[0].length; i++){ //go through rows
+    for(int j = 1; j < grid.length; j++){ //go through cols
+     Vector x = new Vector(projectPoint(grid[j-1][i]));
+     Vector y = new Vector(projectPoint(grid[j][i]));
+     line((float)x.x,(float)x.y,(float)x.z,(float)y.x,(float)y.y,(float)y.z);
+    }
+  }
+  //make lines connecting each row
+  for(int i = 0; i < grid.length; i++){ //go through cols
+    for(int j = 1; j < grid[0].length; j++){ //go through rows
+     Vector x = new Vector(projectPoint(grid[i][j-1]));
+     Vector y = new Vector(projectPoint(grid[i][j]));
+     line((float)x.x,(float)x.y,(float)x.z,(float)y.x,(float)y.y,(float)y.z);
+    }
+  }
+  if (circular == true){ //if circular grid, then connect first and last column
+    for(int i= 0; i<grid.length; i++){
+      Vector x = new Vector(projectPoint(grid[i][0]));
+      Vector y = new Vector(projectPoint(grid[i][grid[0].length-1]));
+      line((float)x.x,(float)x.y,(float)x.z,(float)y.x,(float)y.y,(float)y.z);
     }
   }
 }

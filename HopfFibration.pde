@@ -46,6 +46,9 @@ import org.qscript.operator.*;
   int noRow = 15;
   CxComplex[][] grid = new CxComplex[noCol][noRow];
   CxComplex[][] FlowingGrid = new CxComplex[noCol][noRow];
+  int varyR = 5;
+  int varyTheta = 5;
+  CxComplex[][] circularGrid = new CxComplex[varyR][varyTheta];
   PVector[][] tubes;
 
 void setup() {
@@ -59,6 +62,7 @@ void setup() {
   //CxComplex P = new CxComplex(4,200,0,123); //random point on sphere - gets normalized in setup
   setupDSectionGrid(noCol,noRow,N);
   setupDSectionBoundary(20, N);
+  circularGrid = getDSectionGridCircular(varyR, varyTheta);
   
   //SETUP TUBES
   //tubes = setupTubes(grid, 2*PI, 40);
@@ -103,10 +107,10 @@ void draw(){
   //DRAW D SECTION
   //drawSouthernDSection(); //Point S
   //drawDSectionBoundary(boundaryPoints); //all other Points
-  displayGrid(grid);
-  FlowingGrid = letGridFlow(grid, scrollbarValue(s_Flow,2.5*PI));
-  displayGrid(FlowingGrid,200,0,200);
-  
+  //displayGrid(grid);
+  FlowingGrid = letGridFlow(circularGrid, scrollbarValue(s_Flow,2.5*PI));
+  displayGrid(FlowingGrid, true);
+  displayGrid(circularGrid, true);
   //TUBES
   //drawTube(tubes, scrollbarValue(s_Flow, 35)+5);
  
