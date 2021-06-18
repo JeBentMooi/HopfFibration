@@ -21,7 +21,7 @@ import org.qscript.operator.*;
 
   Complex i = new Complex(0,1); //i
  
-  //SETUP ARRAY OF CIRCLE POINTS
+  //SETUP HOPF FIBRES
   int noPoints = 150; //how many points will be used to draw 1 circle; must be >=3
   int noCircles = 30; //how many circles do you want to plot? - can be changed with scrollbar
   Vector[][]circlePoints;
@@ -51,30 +51,31 @@ import org.qscript.operator.*;
 
 void setup() {
   size(800, 800, P3D);
-  frameRate(10); //fix-bug-thing
+  frameRate(10); //fix-bug-thing, do not delete
+  
   setupScrollbars();
   
   //SETUP DISC LIKE D SECTION
-  CxComplex N = new CxComplex(1,0,0,0); //north pole projection
+  // - these are the "old" way of drawing the d section.
+  //CxComplex N = new CxComplex(1,0,0,0); //north pole projection
   //CxComplex S = new CxComplex(0,0,1,0); //south pole
   //CxComplex P = new CxComplex(4,200,0,123); //random point on sphere - gets normalized in setup
-  setupDSectionGrid(noCol,noRow,N);
-  setupDSectionBoundary(20, N);
+  //setupDSectionGrid(noCol,noRow,N);
+  //setupDSectionBoundary(20, N);
+  // - new way:
   circularGrid = getDSectionGridCircular(varyR, varyTheta);
   circularGrid = rotateDSection(circularGrid, PI/4,3*PI/4,0);
   
-  
   //SETUP TUBES
   tubes = setupTubes(circularGrid, 2*PI, 40);
-  
 }
 
 
 void draw(){
   background(0);
   
-  //UPDATE NoCircles - always an even number!
-  noCircles = 2*(int)scrollbarValue(s_noCircles, 50);
+  //UPDATE NoCircles
+  noCircles = 2*(int)scrollbarValue(s_noCircles, 50); //always even number
   //get everything in order to plot
   circlePoints = new Vector[noCircles][noPoints];
   //setup array of points of interest in C, whose fibres we want to find
@@ -97,7 +98,6 @@ void draw(){
   } else if(camMode%2 == 0){
   camera(width/2, height/2, (height/2) / tan(PI/6), width/2, height/2, 0, 0, 1, 0); //centered camera
   }
-  
     
   //SETUP COORDINATE SYSTEM
   centerCoordinatesystem();
@@ -105,19 +105,22 @@ void draw(){
   nameAxes(300);
   
   //DRAW D SECTION
+  // - "old"
   //drawSouthernDSection(); //Point S
   //drawDSectionBoundary(boundaryPoints); //all other Points
   //displayGrid(grid);
-  //FlowingGrid = letGridFlow(circularGrid, scrollbarValue(s_Flow,2*PI));
-  //displayGrid(FlowingGrid, true, 250,0,250);
+  // - "new"
+  FlowingGrid = letGridFlow(circularGrid, scrollbarValue(s_Flow,2*PI));
+  displayGrid(FlowingGrid, true, 250,0,250);
   displayGrid(circularGrid, true);
   //TUBES
   drawTube(tubes, scrollbarValue(s_Flow, 38)+2);
  
-  //DRAW Fibres
-  fillArray();
+  //DRAW FIBRES  
+  fillArray(); //compute
   drawColCircle(); //draw fibres
   
+  //  - GUI - 
   //DRAW SPHERE IN CORNER
   camera(); //back to normal camera settings for the overlay
   centerCoordinatesystemOverlay();

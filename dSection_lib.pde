@@ -41,31 +41,26 @@ PVector[][] setupTubes(CxComplex[][] grid, float t, int noTotalCoord){// t is th
   return tubeVectors;
 }
 
-void drawTube(PVector[][]tubeCoord, float NumCoord){ //NumCoord tells us how many coordinates we should draw from the ones we got
-  float radius = 0.02; //radius of cross section
+void drawTube(PVector[][]tubeCoord, float NumCoord){ //NumCoord tells us how many coordinates we should draw
+  float radius = 0.01; //radius of cross section
     for (int j=0; j<tubeCoord.length; j++){
       PVector[] coordinates;
-       if(NumCoord <=2){
-         coordinates = new PVector[1];
-         for(int i=0; i<1; i++){
-            coordinates[i]=tubeCoord[j][i];
-         }
-       } else {
+       if(NumCoord >3){
         coordinates = new PVector[(int)NumCoord];
-        for(int i=0; i<(int)NumCoord; i++){
-          coordinates[i]=tubeCoord[j][i];
-         }
+          for(int i=0; i<(int)NumCoord; i++){
+            coordinates[i]=tubeCoord[j][i];
+          }
+        BSpline3D path = new BSpline3D(coordinates,20); //create path for these coordinates
+        Oval oval = new Oval(radius, 10); //create cross section
+        Tube tube = new Tube(path,oval); //create tube
+        tube.drawMode(S3D.SOLID);
+        tube.fill(color(150,150,255));
+        tube.draw(getGraphics());
        }
-      BSpline3D path = new BSpline3D(coordinates,20); //create path for these coordinates
-      Oval oval = new Oval(radius, 10); //create cross section
-      Tube tube = new Tube(path,oval); //create tube
-       tube.drawMode(S3D.SOLID);
-       tube.fill(color(150,150,255));
-       tube.draw(getGraphics());
     }
 }
 
-void drawTubes(Tube[][] tubes, int NumCoord){
+void drawTubes(Tube[][] tubes){ //draws all tubes completely
   for(int i=0; i<tubes.length; i++){//go through cols
     for(int j=0; j<tubes[0].length; j++){//go through rows
       tubes[i][j].drawMode(S3D.SOLID);
