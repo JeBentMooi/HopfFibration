@@ -46,8 +46,8 @@ import org.qscript.operator.*;
   int noRow = 15;
   CxComplex[][] grid = new CxComplex[noCol][noRow];
   CxComplex[][] FlowingGrid = new CxComplex[noCol][noRow];
-  int varyR = 5;
-  int varyTheta = 5;
+  int varyR = 8;
+  int varyTheta = 15;
   CxComplex[][] circularGrid = new CxComplex[varyR][varyTheta];
   PVector[][] tubes;
 
@@ -65,7 +65,7 @@ void setup() {
   circularGrid = getDSectionGridCircular(varyR, varyTheta);
   
   //SETUP TUBES
-  //tubes = setupTubes(grid, 2*PI, 40);
+  tubes = setupTubes(circularGrid, 2*PI, 40);
   
 }
 
@@ -108,11 +108,11 @@ void draw(){
   //drawSouthernDSection(); //Point S
   //drawDSectionBoundary(boundaryPoints); //all other Points
   //displayGrid(grid);
-  FlowingGrid = letGridFlow(circularGrid, scrollbarValue(s_Flow,2.5*PI));
-  displayGrid(FlowingGrid, true);
+  //FlowingGrid = letGridFlow(circularGrid, scrollbarValue(s_Flow,2*PI));
+  //displayGrid(FlowingGrid, true, 250,0,250);
   displayGrid(circularGrid, true);
   //TUBES
-  //drawTube(tubes, scrollbarValue(s_Flow, 35)+5);
+  drawTube(tubes, scrollbarValue(s_Flow, 38)+2);
  
   //DRAW Fibres
   fillArray();

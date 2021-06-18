@@ -43,18 +43,26 @@ PVector[][] setupTubes(CxComplex[][] grid, float t, int noTotalCoord){// t is th
 
 void drawTube(PVector[][]tubeCoord, float NumCoord){ //NumCoord tells us how many coordinates we should draw from the ones we got
   float radius = 0.02; //radius of cross section
-  for (int j=0; j<tubeCoord.length; j++){
-    PVector[] coordinates = new PVector[(int)NumCoord];
-    for(int i=0; i<(int)NumCoord; i++){
-      coordinates[i]=tubeCoord[j][i];
+    for (int j=0; j<tubeCoord.length; j++){
+      PVector[] coordinates;
+       if(NumCoord <=2){
+         coordinates = new PVector[1];
+         for(int i=0; i<1; i++){
+            coordinates[i]=tubeCoord[j][i];
+         }
+       } else {
+        coordinates = new PVector[(int)NumCoord];
+        for(int i=0; i<(int)NumCoord; i++){
+          coordinates[i]=tubeCoord[j][i];
+         }
+       }
+      BSpline3D path = new BSpline3D(coordinates,20); //create path for these coordinates
+      Oval oval = new Oval(radius, 10); //create cross section
+      Tube tube = new Tube(path,oval); //create tube
+       tube.drawMode(S3D.SOLID);
+       tube.fill(color(150,150,255));
+       tube.draw(getGraphics());
     }
-    BSpline3D path = new BSpline3D(coordinates,20); //create path for these coordinates
-    Oval oval = new Oval(radius, 10); //create cross section
-    Tube tube = new Tube(path,oval); //create tube
-     tube.drawMode(S3D.SOLID);
-     tube.fill(color(150,150,255));
-     tube.draw(getGraphics());
-  }
 }
 
 void drawTubes(Tube[][] tubes, int NumCoord){
@@ -158,7 +166,7 @@ CxComplex[][] getDSectionGridCircular(float varyR, float varyTheta){
       Complex Theta = new Complex(j*2*PI/varyTheta-1);
       Complex c_2 = new Complex(Complex.sqrt(Complex.sub(1,Complex.pow(r,2))));
       Complex c_1 = new Complex(r.mult(Complex.exp(Im.mult(Theta))));
-      println(i, j, "c_1", c_1.real, c_1.imag, "c_2", c_2.real, c_2.imag);
+      //println(i, j, "c_1", c_1.real, c_1.imag, "c_2", c_2.real, c_2.imag);
       circularGrid[i][j] = new CxComplex(c_1, c_2);
     }
   }
@@ -239,13 +247,42 @@ void displayGrid(CxComplex[][] grid, int r, int g, int b){
      line((float)x.x,(float)x.y,(float)x.z,(float)y.x,(float)y.y,(float)y.z);
     }
   }
-  
   //make lines connecting each row
   for(int i = 0; i < grid.length; i++){ //go through cols
     for(int j = 1; j < grid[0].length; j++){ //go through rows
      Vector x = new Vector(projectPoint(grid[i][j-1]));
      Vector y = new Vector(projectPoint(grid[i][j]));
      line((float)x.x,(float)x.y,(float)x.z,(float)y.x,(float)y.y,(float)y.z);
+    }
+  }
+}
+
+void displayGrid(CxComplex[][] grid, boolean circular, int r, int g, int b){
+  strokeWeight(0.02);
+  noFill();
+  stroke(r, g, b);
+  //make lines connecting each column
+  for(int i = 0; i < grid[0].length; i++){ //go through rows
+    for(int j = 1; j < grid.length; j++){ //go through cols
+     Vector x = new Vector(projectPoint(grid[j-1][i]));
+     Vector y = new Vector(projectPoint(grid[j][i]));
+     line((float)x.x,(float)x.y,(float)x.z,(float)y.x,(float)y.y,(float)y.z);
+    }
+ }
+  //make lines connecting each row
+  for(int i = 0; i < grid.length; i++){ //go through cols
+    for(int j = 1; j < grid[0].length; j++){ //go through rows
+     Vector x = new Vector(projectPoint(grid[i][j-1]));
+     Vector y = new Vector(projectPoint(grid[i][j]));
+     line((float)x.x,(float)x.y,(float)x.z,(float)y.x,(float)y.y,(float)y.z);
+    }
+  }
+  
+  if (circular == true){ //if circular grid, then connect first and last column
+    for(int i= 0; i<grid.length; i++){
+      Vector x = new Vector(projectPoint(grid[i][0]));
+      Vector y = new Vector(projectPoint(grid[i][grid[0].length-1]));
+      line((float)x.x,(float)x.y,(float)x.z,(float)y.x,(float)y.y,(float)y.z);
     }
   }
 }
