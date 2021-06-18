@@ -38,10 +38,8 @@ import org.qscript.operator.*;
   float rot = 0;
   int camMode = 0;
   
-  //SETUP DISC LIKE D SECTION
+  //SETUP D SECTION GRIDS
   Vector[]boundaryPoints;
-  
-  //SETUP FLOWING GRIDS
   int noCol = 15;
   int noRow = 15;
   CxComplex[][] grid = new CxComplex[noCol][noRow];
@@ -63,6 +61,8 @@ void setup() {
   setupDSectionGrid(noCol,noRow,N);
   setupDSectionBoundary(20, N);
   circularGrid = getDSectionGridCircular(varyR, varyTheta);
+  circularGrid = rotateDSection(circularGrid, PI/4,3*PI/4,0);
+  
   
   //SETUP TUBES
   tubes = setupTubes(circularGrid, 2*PI, 40);

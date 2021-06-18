@@ -10,7 +10,6 @@ class CxComplex { //Complex x Complex -> 4D!
    this.z_1 = new Complex();
    }
    
-   
    CxComplex(CxComplex z){
      this.z_1 = z.z_1;
      this.z_2 = z.z_2;
@@ -24,6 +23,11 @@ class CxComplex { //Complex x Complex -> 4D!
    CxComplex(double x_1, double y_1, double x_2, double y_2) {
     this.z_1 = new Complex(x_1, y_1);
     this.z_2 = new Complex(x_2, y_2);
+   }
+   
+   CxComplex(float x_1, float y_1, float x_2, float y_2) {
+    this.z_1 = new Complex((double)x_1, (double)y_1);
+    this.z_2 = new Complex((double)x_2, (double)y_2);
    }
  
  //FUNCTIONS
@@ -62,6 +66,15 @@ class CxComplex { //Complex x Complex -> 4D!
     float x_2 = 1-len;
     float y_2= (float)this.y_2();
     return new CxComplex(x_1,y_1,x_2,y_2);
+  }
+  
+  CxComplex applyRotMatrix(PMatrix3D rot){
+    float a = rot.multX((float)this.z_1.real, (float)this.z_1.imag, (float)this.z_2.real, (float)this.z_2.imag);
+    float b =rot.multY((float)this.z_1.real, (float)this.z_1.imag, (float)this.z_2.real, (float)this.z_2.imag);
+    float c =rot.multZ((float)this.z_1.real, (float)this.z_1.imag, (float)this.z_2.real, (float)this.z_2.imag);
+    float d =rot.multW((float)this.z_1.real, (float)this.z_1.imag, (float)this.z_2.real, (float)this.z_2.imag);
+    
+    return new CxComplex(a,b,c,d);
   }
   
 }
