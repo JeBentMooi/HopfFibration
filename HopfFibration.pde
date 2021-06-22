@@ -1,3 +1,4 @@
+
 //library for extrusions: Shapes 3D
 import shapes3d.*;
 import shapes3d.contour.*;
@@ -13,6 +14,7 @@ import org.qscript.errors.*;
 import org.qscript.events.*;
 import org.qscript.eventsonfire.*;
 import org.qscript.operator.*;
+
 
 
 
@@ -49,10 +51,11 @@ import org.qscript.operator.*;
   CxComplex[][] circularGrid = new CxComplex[varyR][varyTheta];
   PVector[][] tubes;
 
+
+
 void setup() {
   size(800, 800, P3D);
   frameRate(10); //fix-bug-thing, do not delete
-  
   setupScrollbars();
   
   //SETUP DISC LIKE D SECTION
@@ -64,15 +67,22 @@ void setup() {
   //setupDSectionBoundary(20, N);
   // - new way:
   circularGrid = getDSectionGridCircular(varyR, varyTheta);
-  circularGrid = rotateDSection(circularGrid, PI/4,3*PI/4,0);
+  circularGrid = rotateDSection(circularGrid, PI/4,3*PI/4,0,0);
   
   //SETUP TUBES
-  tubes = setupTubes(circularGrid, 2*PI, 40);
+  tubes = setupTubes(circularGrid, 2*PI);
 }
 
 
 void draw(){
   background(0);
+  
+  //CHOOSE CAMERAMODE
+  //if(camMode%3 == 1){
+  //  camera(mouseX*2, height/2, (height/2) / tan(PI/6), width/2, height/2, 0, 0, 1, 0); //camera which rotates objects with MouseX
+  //} else if(camMode%3 == 0){
+  //  camera(width/2, height/2, (height/2) / tan(PI/6), width/2, height/2, 0, 0, 1, 0); //centered camera
+  //} 
   
   //UPDATE NoCircles
   noCircles = 2*(int)scrollbarValue(s_noCircles, 50); //always even number
@@ -91,14 +101,7 @@ void draw(){
   } else if (SpiralMode == true){
   addPointsSpiral(noCircles);
   }
-     
-  //CHOOSE CAMERAMODE
-  if(camMode%2 == 1){
-    camera(mouseX*1.5, height/2, (height/2) / tan(PI/6), width/2, height/2, 0, 0, 1, 0); //camera which rotates objects with MouseX
-  } else if(camMode%2 == 0){
-  camera(width/2, height/2, (height/2) / tan(PI/6), width/2, height/2, 0, 0, 1, 0); //centered camera
-  }
-    
+  
   //SETUP COORDINATE SYSTEM
   centerCoordinatesystem();
   drawAxes(300);
@@ -114,7 +117,7 @@ void draw(){
   displayGrid(FlowingGrid, true, 250,0,250);
   displayGrid(circularGrid, true);
   //TUBES
-  drawTube(tubes, scrollbarValue(s_Flow, 38)+2);
+  drawTubeCoord(tubes, scrollbarValue(s_Flow, 50));
  
   //DRAW FIBRES  
   fillArray(); //compute
