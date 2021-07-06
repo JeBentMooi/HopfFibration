@@ -89,7 +89,7 @@ CxComplex[][] getDSectionGrid(int noColumns, int noRows, CxComplex p){
   return grid; 
 }
 
-CxComplex[][] getDSectionGridCircular(float varyR, float varyTheta){
+CxComplex[][] getDSectionGridCircular(float varyR, float varyTheta){ //gives us north pole d-section
   CxComplex[][]circularGrid = new CxComplex[(int)varyR][(int)varyTheta];
   for(int i=0; i<varyR; i++){
     for(int j=0; j<varyTheta; j++){
@@ -215,6 +215,83 @@ void displayGrid(CxComplex[][] grid, boolean circular, int r, int g, int b){
       line((float)x.x,(float)x.y,(float)x.z,(float)y.x,(float)y.y,(float)y.z);
     }
   }
+}
+
+//  ------------------------------------------- 2.2.1 A helicoidal annulus ------------------------------------------- 
+
+//lets set up that V_1 part
+
+CxComplex[][] getV_1part(float varyR, float varyTheta){
+  CxComplex[][]V_1_circularGrid = new CxComplex[(int)varyR][(int)varyTheta];
+  for(int k=0; k<varyR; k++){
+    for(int j=0; j<varyTheta; j++){
+      Complex Im = new Complex(0,1); //i
+      Complex r = new Complex(k/(varyR-1));
+      println("r", k, j, " : ", r.real, r.imag);
+      Complex Theta = new Complex(j*2*PI/varyTheta-1);
+      Complex c_1 = new Complex(r.mult(sqrt(2)/2));
+      Complex c_2 = new Complex(Complex.sqrt(Complex.sub(1,Complex.pow(r,2).mult(0.5))).mult(Complex.exp(Im.mult(Theta))));
+      V_1_circularGrid[k][j] = new CxComplex(c_2, c_1);
+    }
+  }
+  return V_1_circularGrid;
+}
+
+CxComplex[][] getV_2part(float varyR, float varyTheta){
+  CxComplex[][]V_2_circularGrid = new CxComplex[(int)varyR][(int)varyTheta];
+  for(int k=0; k<varyR; k++){
+    for(int j=0; j<varyTheta; j++){
+      Complex Im = new Complex(0,1); //i
+      Complex r = new Complex(k*(sqrt(2)/2)/(varyR-1));
+      println("r", k, j, " : ", r.real, r.imag);
+      Complex Theta = new Complex(j*2*PI/varyTheta-1);
+      Complex c_1 = new Complex(Complex.sqrt(Complex.sub(1,Complex.pow(r,2))));
+      Complex c_2 = new Complex(r.mult(Complex.exp(Im.mult(Theta))));
+      V_2_circularGrid[k][j] = new CxComplex(c_2, c_1);
+    }
+  }
+  return V_2_circularGrid;
+}
+
+//  ------------------------------------------- 2.2.2 An annular 2-section ------------------------------------------- 
+
+CxComplex[][] getV_1part2(float varyR, float varyTheta){
+  CxComplex[][]V_1_circularGrid = new CxComplex[(int)varyR][(int)varyTheta];
+  for(int k=0; k<varyR; k++){
+    for(int j=0; j<varyTheta; j++){
+      Complex Im = new Complex(0,1); //i
+      Complex r = new Complex(k/(varyR-1));
+      println("r", k, j, " : ", r.real, r.imag);
+      Complex Theta = new Complex(j*2*PI/varyTheta-1);
+      Complex c_1 = new Complex(r.mult(sqrt(2)/2).mult(Complex.exp(Im.mult(Theta))));
+      Complex c_2 = new Complex(Complex.sqrt(Complex.sub(1,Complex.pow(r,2).mult(0.5))).mult(Complex.exp(Im.mult(Theta))));
+      V_1_circularGrid[k][j] = new CxComplex(c_2, c_1);
+    }
+  }
+  return V_1_circularGrid;
+}
+
+CxComplex[][] getV_2part2(float varyR, float varyTheta){
+  CxComplex[][]V_2_circularGrid = new CxComplex[(int)varyR][(int)varyTheta];
+  for(int k=0; k<varyR; k++){
+    for(int j=0; j<varyTheta; j++){
+      Complex Im = new Complex(0,1); //i
+      Complex r = new Complex(k*(sqrt(2)/2)/(varyR-1));
+      println("r", k, j, " : ", r.real, r.imag);
+      Complex Theta = new Complex(j*2*PI/varyTheta-1);
+      Complex c_1 = new Complex(Complex.sqrt(Complex.sub(1,Complex.pow(r,2))).mult(Complex.exp(Im.mult(Theta))));
+      Complex c_2 = new Complex(r.mult(Complex.exp(Im.mult(Theta))));
+      V_2_circularGrid[k][j] = new CxComplex(c_2, c_1);
+    }
+  }
+  return V_2_circularGrid;
+}
+
+// for the last 2 sections we need this function to visualize the grids:
+
+void displayGrids(CxComplex[][] V_1, CxComplex[][] V_2){
+  displayGrid(V_1, true, 0, 150, 120);
+  displayGrid(V_2, true, 205, 200, 0);
 }
 
 // ------------------------------------------- Tubes ------------------------------------------- 

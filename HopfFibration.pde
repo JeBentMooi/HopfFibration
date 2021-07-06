@@ -1,3 +1,6 @@
+//library for recording the screen
+import processing.video.*;
+import com.hamoid.*;
 
 //library for extrusions: Shapes 3D
 import shapes3d.*;
@@ -51,7 +54,13 @@ import org.qscript.operator.*;
   CxComplex[][] circularGrid = new CxComplex[varyR][varyTheta];
   PVector[][] tubes;
 
-
+  //2.2.1
+  //CxComplex[][] V_1grid = getV_1part(13,20);
+  //CxComplex[][] V_2grid = getV_2part(13,20);
+  
+  //2.2.2
+  //CxComplex[][] V_1grid = getV_1part2(13,20);
+  //CxComplex[][] V_2grid = getV_2part2(13,20);
 
 void setup() {
   size(800, 800, P3D);
@@ -60,14 +69,16 @@ void setup() {
   
   //SETUP DISC LIKE D SECTION
   // - these are the "old" way of drawing the d section.
-  //CxComplex N = new CxComplex(1,0,0,0); //north pole projection
+  CxComplex N = new CxComplex(1,0,0,0); //north pole projection
   //CxComplex S = new CxComplex(0,0,1,0); //south pole
   //CxComplex P = new CxComplex(4,200,0,123); //random point on sphere - gets normalized in setup
-  //setupDSectionGrid(noCol,noRow,N);
+  setupDSectionGrid(noCol,noRow,N);
   //setupDSectionBoundary(20, N);
   // - new way:
   circularGrid = getDSectionGridCircular(varyR, varyTheta);
-  circularGrid = rotateDSection(circularGrid, PI/4,3*PI/4,0,0);
+  //circularGrid = rotateDSection(circularGrid, 0, 0 ,PI/4,0); 
+  //2.2.1 - helicoidal annulus
+  //circularGrid = getV_1part(10, 20);
   
   //SETUP TUBES
   tubes = setupTubes(circularGrid, 2*PI);
@@ -112,12 +123,19 @@ void draw(){
   //drawSouthernDSection(); //Point S
   //drawDSectionBoundary(boundaryPoints); //all other Points
   //displayGrid(grid);
+  //FlowingGrid = letGridFlow(grid, scrollbarValue(s_Flow,2*PI));
+  //displayGrid(FlowingGrid, false, 250,0,250);
+  
   // - "new"
   FlowingGrid = letGridFlow(circularGrid, scrollbarValue(s_Flow,2*PI));
+  //FlowingGrid = letGridFlow(circularGrid, 3*PI/4);
   displayGrid(FlowingGrid, true, 250,0,250);
   displayGrid(circularGrid, true);
   //TUBES
   drawTubeCoord(tubes, scrollbarValue(s_Flow, 50));
+ 
+  //2.2.1 or 2.2.2 - helicoidal annulus or annular 2-section
+  //displayGrids(V_1grid, V_2grid);
  
   //DRAW FIBRES  
   fillArray(); //compute
@@ -140,6 +158,9 @@ void draw(){
   updateScrollbars();
   displayScrollbars();
   drawButtons();
+  
+  //enable to record screen:
+  rec();
 }
 
 void mousePressed() {
@@ -170,5 +191,8 @@ void keyPressed(){
     if (keyCode == UP) {
       camMode++;
     }
+  } else if (key == 'q') {
+    videoExport.endMovie();
+    exit();
   }
 }
