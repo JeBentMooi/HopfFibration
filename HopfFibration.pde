@@ -32,7 +32,7 @@ import org.qscript.operator.*;
   Vector[][]circlePoints;
   Complex[]startingPoints;
   
-  //SETUP SCROLLBARS
+  //SETUP SCROLLBARS & BUTTONS
   HScrollbar s_VaryPhi, s_VaryTheta, s_VaryTheta2, s_Spiral;
   HScrollbar s_Flow, s_noCircles;
   boolean VaryThetaMode = true;
@@ -42,6 +42,7 @@ import org.qscript.operator.*;
   boolean zoomMode = false;
   float rot = 0;
   int camMode = 0;
+  
   
   //SETUP D SECTION GRIDS
   Vector[]boundaryPoints;
@@ -55,12 +56,12 @@ import org.qscript.operator.*;
   PVector[][] tubes;
 
   //2.2.1
-  //CxComplex[][] V_1grid = getV_1part(13,20);
-  //CxComplex[][] V_2grid = getV_2part(13,20);
+  CxComplex[][] V_1grid_1 = getV_1part(13,20);
+  CxComplex[][] V_2grid_1 = getV_2part(13,20);
   
   //2.2.2
-  //CxComplex[][] V_1grid = getV_1part2(13,20);
-  //CxComplex[][] V_2grid = getV_2part2(13,20);
+  CxComplex[][] V_1grid_2 = getV_1part2(13,20);
+  CxComplex[][] V_2grid_2 = getV_2part2(13,20);
 
 void setup() {
   size(800, 800, P3D);
@@ -76,12 +77,12 @@ void setup() {
   //setupDSectionBoundary(20, N);
   // - new way:
   circularGrid = getDSectionGridCircular(varyR, varyTheta);
-  //circularGrid = rotateDSection(circularGrid, 0, 0 ,PI/4,0); 
+  circularGrid = rotateDSection(circularGrid, 0, PI/2 ,PI/4, 3*PI/4); 
   //2.2.1 - helicoidal annulus
   //circularGrid = getV_1part(10, 20);
   
   //SETUP TUBES
-  tubes = setupTubes(circularGrid, 2*PI);
+  //tubes = setupTubes(circularGrid, 2*PI);
 }
 
 
@@ -127,15 +128,15 @@ void draw(){
   //displayGrid(FlowingGrid, false, 250,0,250);
   
   // - "new"
-  FlowingGrid = letGridFlow(circularGrid, scrollbarValue(s_Flow,2*PI));
+  //FlowingGrid = letGridFlow(circularGrid, scrollbarValue(s_Flow,2*PI));
   //FlowingGrid = letGridFlow(circularGrid, 3*PI/4);
-  displayGrid(FlowingGrid, true, 250,0,250);
-  displayGrid(circularGrid, true);
+  //displayGrid(FlowingGrid, true, 250,0,250);
+  //displayGrid(circularGrid, true);
   //TUBES
-  drawTubeCoord(tubes, scrollbarValue(s_Flow, 50));
+  //drawTubeCoord(tubes, scrollbarValue(s_Flow, 50));
  
   //2.2.1 or 2.2.2 - helicoidal annulus or annular 2-section
-  //displayGrids(V_1grid, V_2grid);
+  displayGrids(V_1grid, V_2grid);
  
   //DRAW FIBRES  
   fillArray(); //compute
@@ -184,6 +185,7 @@ void mousePressed() {
   } else if(overSphere()==true && RotationMode == false){
     RotationMode = true;
   }
+  
 }
 
 void keyPressed(){

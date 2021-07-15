@@ -260,10 +260,11 @@ CxComplex[][] getV_1part2(float varyR, float varyTheta){
   for(int k=0; k<varyR; k++){
     for(int j=0; j<varyTheta; j++){
       Complex Im = new Complex(0,1); //i
+      Complex MinIm = new Complex(0,-1);
       Complex r = new Complex(k/(varyR-1));
       println("r", k, j, " : ", r.real, r.imag);
       Complex Theta = new Complex(j*2*PI/varyTheta-1);
-      Complex c_1 = new Complex(r.mult(sqrt(2)/2).mult(Complex.exp(Im.mult(Theta))));
+      Complex c_1 = new Complex(r.mult(sqrt(2)/2).mult(Complex.exp(MinIm.mult(Theta))));
       Complex c_2 = new Complex(Complex.sqrt(Complex.sub(1,Complex.pow(r,2).mult(0.5))).mult(Complex.exp(Im.mult(Theta))));
       V_1_circularGrid[k][j] = new CxComplex(c_2, c_1);
     }
@@ -276,10 +277,11 @@ CxComplex[][] getV_2part2(float varyR, float varyTheta){
   for(int k=0; k<varyR; k++){
     for(int j=0; j<varyTheta; j++){
       Complex Im = new Complex(0,1); //i
+      Complex MinIm = new Complex(0,-1);
       Complex r = new Complex(k*(sqrt(2)/2)/(varyR-1));
       println("r", k, j, " : ", r.real, r.imag);
       Complex Theta = new Complex(j*2*PI/varyTheta-1);
-      Complex c_1 = new Complex(Complex.sqrt(Complex.sub(1,Complex.pow(r,2))).mult(Complex.exp(Im.mult(Theta))));
+      Complex c_1 = new Complex(Complex.sqrt(Complex.sub(1,Complex.pow(r,2))).mult(Complex.exp(MinIm.mult(Theta))));
       Complex c_2 = new Complex(r.mult(Complex.exp(Im.mult(Theta))));
       V_2_circularGrid[k][j] = new CxComplex(c_2, c_1);
     }

@@ -109,10 +109,11 @@ int width_scrollbars = 150;
 int height_scrollbars = 15;
 int space = 20; //space to left & top of screen
  
-float x_scrollbars; // - height_scrollbars-space;
+float x_scrollbars;
 float y_VaryTheta = space;
 float y_VaryPhi = space*2+height_scrollbars;
 float y_Spiral = height-space-height_scrollbars;
+
  
 void setupScrollbars(){
   x_scrollbars = width-width_scrollbars-space;
@@ -161,15 +162,16 @@ void drawButtons(){
   fill(70,0,70);
   strokeWeight(2);
   stroke(255);
-  rect(x_scrollbars- height_scrollbars-space, y_VaryTheta, height_scrollbars, height_scrollbars);
-  rect(x_scrollbars- height_scrollbars-space, y_VaryPhi, height_scrollbars, height_scrollbars);
-  rect(x_scrollbars- height_scrollbars-space, y_Spiral, height_scrollbars, height_scrollbars);
-  //add text
+  rect(x_scrollbars- height_scrollbars-space, y_VaryTheta, height_scrollbars, height_scrollbars); //varyTheta
+  rect(x_scrollbars- height_scrollbars-space, y_VaryPhi, height_scrollbars, height_scrollbars); //VaryPhi
+  rect(x_scrollbars- height_scrollbars-space, y_Spiral, height_scrollbars, height_scrollbars); //Spiral
+   //add text
   fill(200);
   textSize(2*space/3);
   text("Vary Theta", x_scrollbars - space*3, y_VaryTheta);
   text("Vary Phi", x_scrollbars - space*3, y_VaryPhi);
   text("Spiral", x_scrollbars - space*3, y_Spiral);
+  
 }
 
 boolean overVaryThetaButton()  {
