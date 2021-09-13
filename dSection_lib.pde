@@ -7,44 +7,7 @@ void SetupDisplaySettingsDSection(){
   stroke(255);
 }
 
-//  ------------------------------------------- Boundary of D-Section ------------------------------------------- 
-
-void setupDSectionBoundary(int dSectionNoPoints, CxComplex z){
-  z = z.normalize();
-  boundaryPoints = getBoundaryPoints(dSectionNoPoints, z);
-}
-
-Vector[] getBoundaryPoints(int amount, CxComplex z){ //gives array of points on the boundary circle of the d section, z is one point on fibre in S^3
-  CxComplex[]C2_Points = new CxComplex[amount];
-  C2_Points[0] = z.normalize();
-  for (int i=1; i<amount; i++){
-    C2_Points[i]=getNewPoint(C2_Points[i-1], amount);
-  }
-  Vector[]boundaryPoints = new Vector[amount];
-  for (int j=0; j<amount; j++){
-    boundaryPoints[j]=projectPoint(C2_Points[j]);
-  }
-  return boundaryPoints;
-}  
-
-
-void drawDSectionBoundary(Vector[] bdryPoints){
-  SetupDisplaySettingsDSection();
-  curveTightness(0.5);
-   beginShape();
-     for(int i=0; i<bdryPoints.length; i++){
-      if(i>0 && distance(bdryPoints[i],bdryPoints[i-1])>500){//distance too big - end shape and start new shape for rest of circle.
-      endShape();
-      beginShape();
-      } else {
-      curveVertex((float)bdryPoints[i].x,(float)bdryPoints[i].y,(float)bdryPoints[i].z); 
-      }
-    }
-    curveVertex((float)bdryPoints[0].x,(float)bdryPoints[0].y,(float)bdryPoints[0].z); //1
-    curveVertex((float)bdryPoints[1].x,(float)bdryPoints[1].y,(float)bdryPoints[1].z); //2 
-    curveVertex((float)bdryPoints[2].x,(float)bdryPoints[2].y,(float)bdryPoints[2].z); //3 - need those three for anchor point in beginning and end
-    endShape();
-}
+//  ------------------------------------------- Southern 1-Section ------------------------------------------- 
 
 void drawSouthernDSectionBoundary(){
   SetupDisplaySettingsDSection();
@@ -57,9 +20,10 @@ void drawSouthernDSectionBoundary(){
 
 // ------------------------------------------- Grid of D-Section ------------------------------------------- 
 
-void setupDSectionGrid(int noCol, int noRow, CxComplex z){
+CxComplex[][] setupDSectionGrid(CxComplex[][] grid, int noCol, int noRow, CxComplex z){
   CxComplex p = new CxComplex(z.normalize());
   grid = getDSectionGrid(noCol, noRow, p);
+  return grid;
 }
 
 CxComplex[][] getDSectionGrid(int noColumns, int noRows, CxComplex p){
@@ -140,7 +104,8 @@ void displayGrid(CxComplex[][] grid){
 void displayGrid(CxComplex[][] grid, boolean circular){
   strokeWeight(0.02);
   noFill();
-  stroke(255);
+  //stroke(52,165,218); //blue tone from presentation
+  stroke(250);
   //make lines connecting each column
   for(int i = 0; i < grid[0].length; i++){ //go through rows
     for(int j = 1; j < grid.length; j++){ //go through cols
@@ -255,7 +220,7 @@ CxComplex[][] getV_2part(float varyR, float varyTheta){
 
 //  ------------------------------------------- 2.2.2 An annular 2-section ------------------------------------------- 
 
-CxComplex[][] getV_1part2(float varyR, float varyTheta){
+CxComplex[][] getV_1part_2Section(float varyR, float varyTheta){
   CxComplex[][]V_1_circularGrid = new CxComplex[(int)varyR][(int)varyTheta];
   for(int k=0; k<varyR; k++){
     for(int j=0; j<varyTheta; j++){
@@ -266,13 +231,13 @@ CxComplex[][] getV_1part2(float varyR, float varyTheta){
       Complex Theta = new Complex(j*2*PI/varyTheta-1);
       Complex c_1 = new Complex(r.mult(sqrt(2)/2).mult(Complex.exp(MinIm.mult(Theta))));
       Complex c_2 = new Complex(Complex.sqrt(Complex.sub(1,Complex.pow(r,2).mult(0.5))).mult(Complex.exp(Im.mult(Theta))));
-      V_1_circularGrid[k][j] = new CxComplex(c_2, c_1);
+      V_1_circularGrid[k][j] = new CxComplex(c_1, c_2);
     }
   }
   return V_1_circularGrid;
 }
 
-CxComplex[][] getV_2part2(float varyR, float varyTheta){
+CxComplex[][] getV_2part_2Section(float varyR, float varyTheta){
   CxComplex[][]V_2_circularGrid = new CxComplex[(int)varyR][(int)varyTheta];
   for(int k=0; k<varyR; k++){
     for(int j=0; j<varyTheta; j++){
@@ -283,7 +248,7 @@ CxComplex[][] getV_2part2(float varyR, float varyTheta){
       Complex Theta = new Complex(j*2*PI/varyTheta-1);
       Complex c_1 = new Complex(Complex.sqrt(Complex.sub(1,Complex.pow(r,2))).mult(Complex.exp(MinIm.mult(Theta))));
       Complex c_2 = new Complex(r.mult(Complex.exp(Im.mult(Theta))));
-      V_2_circularGrid[k][j] = new CxComplex(c_2, c_1);
+      V_2_circularGrid[k][j] = new CxComplex(c_1, c_2);
     }
   }
   return V_2_circularGrid;
@@ -292,8 +257,13 @@ CxComplex[][] getV_2part2(float varyR, float varyTheta){
 // for the last 2 sections we need this function to visualize the grids:
 
 void displayGrids(CxComplex[][] V_1, CxComplex[][] V_2){
-  displayGrid(V_1, true, 0, 150, 120);
-  displayGrid(V_2, true, 205, 200, 0);
+  displayGrid(V_2, true, 0, 150, 120);
+  displayGrid(V_1, true, 205, 200, 0);
+}
+
+void displayGridsColoured(CxComplex[][] V_1, CxComplex[][] V_2){
+  displayGrid(V_2, true, 0, 150, 170);
+  displayGrid(V_1, true, 240, 160, 5);
 }
 
 // ------------------------------------------- Tubes ------------------------------------------- 
