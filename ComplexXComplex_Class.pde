@@ -104,6 +104,3 @@ class CxComplex { //Complex x Complex -> 4D!
    b = b.add(d);
    return new CxComplex(a,b);
  }
-
- 
- 
