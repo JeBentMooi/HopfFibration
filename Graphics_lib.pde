@@ -9,11 +9,7 @@ void centerCoordinatesystem(){
   rotateZ(PI/8);
 }
 
-void resetCoordinatesystem(){
-  rotateZ(2*PI-PI/8);
-  rotateX(2*PI-3*PI/8);
-  translate(-width/2, -height/2, 0);
-}
+
 
 void drawAxes(float size){
   //X  - red
@@ -66,6 +62,7 @@ void centerCoordinatesystemOverlay(){
 //____________________________________________GUI__________________________________________________________________________________________________________________________________________________
 
 int sphere_size = 80;
+
 void drawSphere(){
   strokeWeight(1);
   stroke(255, 70);
@@ -113,8 +110,14 @@ float x_scrollbars;
 float y_VaryTheta = space;
 float y_VaryPhi = space*2+height_scrollbars;
 float y_Spiral = height-space-height_scrollbars;
+float y_1sectionStd = space*5+height_scrollbars*4;
+float y_1section = space*6+height_scrollbars*5;
+float y_2section = space*7+height_scrollbars*6;
+float y_gamma_1 = y_Spiral+7*space+5*height_scrollbars;
+float y_gamma_2 = y_Spiral+8*space+6*height_scrollbars;
+float y_gamma_3 = y_Spiral+9*space+7*height_scrollbars;
+float y_gamma_4 = y_Spiral+10*space+8*height_scrollbars;
 
- 
 void setupScrollbars(){
   x_scrollbars = width-width_scrollbars-space;
   y_VaryTheta = space+height_scrollbars/2;
@@ -125,6 +128,11 @@ void setupScrollbars(){
   s_VaryTheta2 = new HScrollbar(x_scrollbars, y_VaryTheta+space+height_scrollbars, width_scrollbars, height_scrollbars, 2);
   s_VaryPhi = new HScrollbar(x_scrollbars, y_VaryPhi, width_scrollbars, height_scrollbars, 2);
   s_Spiral = new HScrollbar(x_scrollbars, y_Spiral, width_scrollbars, height_scrollbars, 2);
+  
+  s_gamma_1 = new HScrollbar(x_scrollbars, y_gamma_1, width_scrollbars, height_scrollbars, 2);
+  s_gamma_2 = new HScrollbar(x_scrollbars, y_gamma_2, width_scrollbars, height_scrollbars, 2);
+  s_gamma_3 = new HScrollbar(x_scrollbars, y_gamma_3, width_scrollbars, height_scrollbars, 2);
+  
   s_Flow = new HScrollbar(x_scrollbars, height-space/2-space-height_scrollbars, width_scrollbars, height_scrollbars, 2);
   s_noCircles = new HScrollbar(x_scrollbars, height-space/2, width_scrollbars, height_scrollbars, 2);
   s_noCircles.spos = s_noCircles.xpos +30*width_scrollbars/100;
@@ -135,6 +143,9 @@ void updateScrollbars(){
   s_VaryTheta2.update();  
   s_VaryPhi.update();
   s_Spiral.update();
+  s_gamma_1.update();
+  s_gamma_2.update();
+  s_gamma_3.update();
   s_Flow.update();
   s_noCircles.update();
 }
@@ -144,12 +155,14 @@ void displayScrollbars(){
   s_VaryTheta2.display();
   s_VaryPhi.display();
   s_Spiral.display();
+  s_gamma_1.display();
+  s_gamma_2.display();
+  s_gamma_3.display();
   s_Flow.display();
   s_noCircles.display();
   //add text
   fill(200);
   textSize(2*space/3);
-  text("D-Section Flow", x_scrollbars - space*5,  height-space/2-3*space/4-height_scrollbars);
   text("#fibres", x_scrollbars - space*5,  height-space/4);
 }
 
@@ -162,16 +175,32 @@ void drawButtons(){
   fill(70,0,70);
   strokeWeight(2);
   stroke(255);
-  rect(x_scrollbars- height_scrollbars-space, y_VaryTheta, height_scrollbars, height_scrollbars); //varyTheta
-  rect(x_scrollbars- height_scrollbars-space, y_VaryPhi, height_scrollbars, height_scrollbars); //VaryPhi
-  rect(x_scrollbars- height_scrollbars-space, y_Spiral, height_scrollbars, height_scrollbars); //Spiral
-   //add text
+  rect(x_scrollbars- height_scrollbars-space, y_VaryTheta- space/3, height_scrollbars, height_scrollbars); //varyTheta
+  rect(x_scrollbars- height_scrollbars-space, y_VaryPhi- space/3, height_scrollbars, height_scrollbars); //VaryPhi
+  rect(x_scrollbars- height_scrollbars-space, y_Spiral- space/3, height_scrollbars, height_scrollbars); //Spiral
+  rect(width-space-height_scrollbars,y_1sectionStd, height_scrollbars, height_scrollbars); //1section
+  rect(width-space-height_scrollbars,y_1section, height_scrollbars, height_scrollbars); //1section
+  rect(width-space-height_scrollbars,y_2section, height_scrollbars, height_scrollbars); //2section
+  
+  rect(x_scrollbars - space, y_gamma_1 - space/3, height_scrollbars, height_scrollbars); //gamma_1
+  rect(x_scrollbars - space, y_gamma_2- space/3, height_scrollbars, height_scrollbars); //gamma_2
+  rect(x_scrollbars - space, y_gamma_3- space/3, height_scrollbars, height_scrollbars); //gamma_3  
+  
+  rect(x_scrollbars - space, height-space/2-4*space/3-height_scrollbars, height_scrollbars, height_scrollbars);//flow
+  
+  //add text
   fill(200);
   textSize(2*space/3);
-  text("Vary Theta", x_scrollbars - space*3, y_VaryTheta);
-  text("Vary Phi", x_scrollbars - space*3, y_VaryPhi);
-  text("Spiral", x_scrollbars - space*3, y_Spiral);
-  
+  text("Vary Theta", x_scrollbars - space*6, y_VaryTheta + space/3);
+  text("Vary Phi", x_scrollbars - space*5, y_VaryPhi+ space/3);
+  text("Spiral", x_scrollbars - space*5, y_Spiral+ space/3);
+  text("std 1-section",width-space-height_scrollbars*4-space*3,y_1sectionStd+space/2);
+  text("1-section",width-space-height_scrollbars*4-space*2,y_1section+space/2);
+  text("2-section",width-space-height_scrollbars*4-space*2,y_2section+space/2);
+  text("\u03B3\u2081", x_scrollbars - space*2 - height_scrollbars, y_gamma_1+space/3);
+  text("\u03B3\u2082", x_scrollbars - space*2- height_scrollbars, y_gamma_2+space/3);
+  text("\u03B3\u2083", x_scrollbars - space*2- height_scrollbars, y_gamma_3+space/3);
+  text("D-Section Flow", x_scrollbars - space*6.5,  height-space/2-3*space/4-height_scrollbars);
 }
 
 boolean overVaryThetaButton()  {
@@ -195,6 +224,69 @@ boolean overVaryPhiButton()  {
 boolean overSpiralButton()  {
   if (mouseX >= x_scrollbars-height_scrollbars-space && mouseX <= x_scrollbars-space && 
       mouseY >= y_Spiral && mouseY <= y_Spiral+height_scrollbars) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+boolean over1section()  {
+  if (mouseX >= width-space-height_scrollbars && mouseX <= width-space && 
+      mouseY >= y_1section && mouseY <= y_1section+height_scrollbars) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+boolean over2section()  {
+  if (mouseX >= width-space-height_scrollbars && mouseX <= width-space && 
+      mouseY >= y_2section && mouseY <= y_2section+height_scrollbars) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+boolean over1sectionStd()  {
+  if (mouseX >= width-space-height_scrollbars && mouseX <= width-space && 
+      mouseY >= y_1sectionStd && mouseY <= y_1sectionStd+height_scrollbars) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+boolean overGamma1(){
+  if (mouseX >= x_scrollbars - space && mouseX <= x_scrollbars - space+height_scrollbars && 
+      mouseY >= y_gamma_1 - space/3 && mouseY <= x_scrollbars - space+height_scrollbars) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+boolean overGamma2(){
+  if (mouseX >= x_scrollbars - space && mouseX <= x_scrollbars - space+height_scrollbars && 
+      mouseY >= y_gamma_2 - space/3 && mouseY <= x_scrollbars - space+height_scrollbars) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+boolean overGamma3(){
+  if (mouseX >= x_scrollbars - space && mouseX <= x_scrollbars - space+height_scrollbars && 
+      mouseY >= y_gamma_3 - space/3 && mouseY <= x_scrollbars - space+height_scrollbars) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+boolean overFlow(){
+  if (mouseX >= x_scrollbars - space && mouseX <= x_scrollbars - space +height_scrollbars && 
+      mouseY >= height-space/2-4*space/3-height_scrollbars  && mouseY <= height-space/2-4*space/3-height_scrollbars+height_scrollbars) {
     return true;
   } else {
     return false;
